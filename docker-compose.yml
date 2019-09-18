@@ -2,18 +2,8 @@ version: '3.7'
 
 services:
 
-  weblocacao-views:
+  weblocacao-extensions:
     build: .
-    ports:
-      - 8080:80
-    environment:
-      - WEBLOCACAO_USERNAME='test'
-      - WEBLOCACAO_PASSWORD='test'
-
-  nginx-cache-proxy:
-    image: flaviostutz/nginx-cache-proxy:1.4.0
+    image: flaviostutz/weblocacao-extensions
     ports:
       - 8181:80
-    environment:
-      - PROXY_COOKIE_DOMAIN='www.weblocacao.com.br localhost'
-

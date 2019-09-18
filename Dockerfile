@@ -1,11 +1,8 @@
-FROM nginx:1.17.0
+FROM flaviostutz/nginx-cache-proxy:1.6.0
 
-ADD /default.conf /etc/nginx/conf.d/
-ADD /startup.sh /
+ADD /src /www/_www
 
-ADD /src /www
+ENV REDIR_FROM_PATH /dashboard/dash
+ENV PROXY_PASS_URL https://www.weblocacao.com.br/
+ENV PROXY_COOKIE_DOMAIN www.weblocacao.com.br localhost
 
-ENV WEBLOCACAO_USERNAME ''
-ENV WEBLOCACAO_PASSWORD ''
-
-CMD ["/startup.sh"]
