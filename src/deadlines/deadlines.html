@@ -13,9 +13,6 @@
 </head>
 
 <body>
-    <div id="top">
-      <div style="text-align:center; font-size:3em">Entregas da semana</div>
-    </div>
     <div id="lnb">
         <div id="lnb-calendars" class="lnb-calendars">
             <div id="calendarList" class="lnb-calendars-d1">
@@ -87,7 +84,10 @@
                     <i class="calendar-icon ic-arrow-line-right" data-action="move-next"></i>
                 </button>
             </span>
-            <span id="renderRange" class="render-range"></span>
+            <span>
+                <span id="renderRange" class="render-range"></span>
+                <span id="spinnerDiv" style="float:right"></span>
+            </span>
         </div>
         <div id="calendar"></div>
     </div>
@@ -102,12 +102,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tui-calendar/1.12.5/tui-calendar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>  
 
   <script src="weblocacao.js"></script>
   <script src="deadlines.js"></script>
   
   <!-- <script src="schedules.js"></script>
-  <script src="schedules.js"></script>
-  <script src="default.js"></script> -->
+  <script src="schedules.js"></script>-->
+  <!-- <script src="default.js"></script> -->
 </body>
 </html>

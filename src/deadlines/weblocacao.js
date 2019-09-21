@@ -50,17 +50,95 @@ function fetchContratosAtivosList(idStore, success, error) {
 function fetchContratoDetails(idContrato, success, error) {
     console.log('fetchContratoDetails() idContrato=' + idContrato)
     //html
-    //https://www.weblocacao.com.br/order/edit/182250
+    fetch('/order/edit/' + idContrato)
+        .then(response => response.text())
+        .then(data => {
+            contratoDetails = {}
 
-    //contract
-    //name="CustomerName" value="FLAVIA TESTE"
-    //<input name="EventDate" value="27/10/2019"
+            //contract
+            //name="CustomerName" value="FLAVIA TESTE"
+            nr = /name=\"CustomerName" value=\"(.*)\"/
+            nm = data.match(nr)
+            if(nm.length==2) {
+                contratoDetails.name = nm[1]
+            }
+            console.log("CONTRATO " + contratoDetails.name)
+            //<input name="EventDate" value="27/10/2019"
+            nr = /<input name="EventDate" value="([0-9\/]*)"/
+            nm = data.match(nr)
+            if(nm.length==2) {
+                contratoDetails.eventoDate = moment(nm[1], "DD/MM/YYYY").toDate()
+            }
 
-    //list all items: //id="divItemProductRow606003"
-    //<input value="17/10/2019 09:00" class="form-control  TestDate" name="OrderItems[602304].TestDate"
-    //name="OrderItems[602304].RemoveDate" value="25/10/2019"
-    //name="OrderItems[602304].RemovedDate"
-    //name="OrderItems[606002].Notes" id="Notes" placeholder="Informações importantes sobre o item ">#toninha</textarea>
+            contratoDetails.items = []
+
+            //list all items: //id="divItemProductRow606003"
+            nr = /div class=\"panel panel-default\" id=\"divItemProductRow([0-9]+)\"/gm
+            nm0 = data.match(nr)
+            if(nm0.length>=1) {
+                console.log("ITEMS FOUND " + nm0.length)
+                for(a=0;a<nm0.length;a++) {
+                    item = {}
+                    pid = -1
+
+                    nn = /([0-9]+)/
+                    n = nm0[a].match(nn)
+                    if(n.length==2) {
+                        pid = n[1]
+                        console.log("ITEM ID " + pid)
+                    } else {
+                        error("couldn't find item id")
+                        return
+                    }
+
+                    //<input value="17/10/2019 09:00" class="form-control  TestDate" name="OrderItems[602304].TestDate"
+                    nr = "input value=\"([0-9\\/\\:\\s]+)\" class=\"form-control  TestDate\" name=\"OrderItems\\["+ pid +"\\].TestDate\""
+                    //console.log(nr)
+                    nm = data.match(new RegExp(nr))
+                    if(nm.length==2) {
+                        item.provaDate = moment(nm[1], "DD/MM/YYYY HH:mm").toDate()
+                    } else {
+                        error("couldn't find provaDate")
+                        return
+                    }
+
+                    //name="OrderItems[602304].RemoveDate" value="25/10/2019"
+                    nr = "name=\"OrderItems\\["+pid+"\\].RemoveDate\" value=\"([0-9\/]+)\""
+                    //console.log(nr)
+                    nm = data.match(new RegExp(nr))
+                    if(nm.length==2) {
+                        item.retiradaDate = moment(nm[1], "DD/MM/YYYY").toDate()
+                    } else {
+                        error("couldn't find retiradaDate")
+                        return
+                    }
+
+                    //name="OrderItems[602304].RemovedDate"
+
+                    //name="OrderItems[606002].Notes" id="Notes" placeholder="Informações importantes sobre o item ">#toninha</textarea>
+                    nr = "name=\"OrderItems\\["+ pid +"\\].Notes\" id=\"Notes\" placeholder=\"Informações importantes sobre o item \"\\>(.*)\\<\\/textarea\\>"
+                    //console.log(nr)
+                    nm = data.match(new RegExp(nr))
+                    if(nm.length==2) {
+                        item.notas = nm[1]
+                    } else {
+                        error("couldn't find notas")
+                        return
+                    }
+                    console.log("item=" + item)
+                    contratoDetails.items.push(item)
+                }
+            }
+
+            console.log("CONTRATO DETAILS")
+            console.log(contratoDetails)
+
+            success(contratoDetails)
+        })
+        .catch(err => {
+            error(err)
+        })
+
 }
 
 function fetchAllContratos(cids, contratos, success, error) {
