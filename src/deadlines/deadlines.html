@@ -25,58 +25,34 @@
                 <button id="dropdownMenu-calendarType" class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="true">
                     <i id="calendarTypeIcon" class="calendar-icon ic_view_month" style="margin-right: 4px;"></i>
-                    <span id="calendarTypeName">Dropdown</span>&nbsp;
+                    <span id="calendarTypeName">Semanal</span>&nbsp;
                     <i class="calendar-icon tui-full-calendar-dropdown-arrow"></i>
                 </button>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu-calendarType">
                     <li role="presentation">
                         <a class="dropdown-menu-title" role="menuitem" data-action="toggle-daily">
-                            <i class="calendar-icon ic_view_day"></i>Daily
+                            <i class="calendar-icon ic_view_day"></i>Diário
                         </a>
                     </li>
                     <li role="presentation">
                         <a class="dropdown-menu-title" role="menuitem" data-action="toggle-weekly">
-                            <i class="calendar-icon ic_view_week"></i>Weekly
+                            <i class="calendar-icon ic_view_week"></i>Semanal
                         </a>
                     </li>
                     <li role="presentation">
                         <a class="dropdown-menu-title" role="menuitem" data-action="toggle-monthly">
-                            <i class="calendar-icon ic_view_month"></i>Month
+                            <i class="calendar-icon ic_view_month"></i>Mensal
                         </a>
                     </li>
                     <li role="presentation">
                         <a class="dropdown-menu-title" role="menuitem" data-action="toggle-weeks2">
-                            <i class="calendar-icon ic_view_week"></i>2 weeks
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a class="dropdown-menu-title" role="menuitem" data-action="toggle-weeks3">
-                            <i class="calendar-icon ic_view_week"></i>3 weeks
-                        </a>
-                    </li>
-                    <li role="presentation" class="dropdown-divider"></li>
-                    <li role="presentation">
-                        <a role="menuitem" data-action="toggle-workweek">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-workweek" checked>
-                            <span class="checkbox-title"></span>Show weekends
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a role="menuitem" data-action="toggle-start-day-1">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-start-day-1">
-                            <span class="checkbox-title"></span>Start Week on Monday
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a role="menuitem" data-action="toggle-narrow-weekend">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-narrow-weekend">
-                            <span class="checkbox-title"></span>Narrower than weekdays
+                            <i class="calendar-icon ic_view_week"></i>2 Semanas
                         </a>
                     </li>
                 </ul>
             </span>
             <span id="menu-navi">
-                <button type="button" class="btn btn-default btn-sm move-today" data-action="move-today">Today</button>
+                <button type="button" class="btn btn-default btn-sm move-today" data-action="move-today">Hoje</button>
                 <button type="button" class="btn btn-default btn-sm move-day" data-action="move-prev">
                     <i class="calendar-icon ic-arrow-line-left" data-action="move-prev"></i>
                 </button>
@@ -87,6 +63,7 @@
             <span>
                 <span id="renderRange" class="render-range"></span>
                 <span id="spinnerDiv" style="float:right"></span>
+                <span style="float:right; font-size:2em">Entregas</span>
             </span>
         </div>
         <div id="calendar"></div>
