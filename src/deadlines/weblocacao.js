@@ -103,7 +103,7 @@ function fetchContratoDetails(idContrato, success, error) {
                     }
 
                     //name="OrderItems[602304].RemoveDate" value="25/10/2019"
-                    nr = "name=\"OrderItems\\["+pid+"\\].RemoveDate\" value=\"([0-9\/]+)\""
+                    nr = "name=\"OrderItems\\["+pid+"\\].RemoveDate\" value=\"([0-9\/]+).*\""
                     //console.log(nr)
                     nm = data.match(new RegExp(nr))
                     if(nm.length==2) {
