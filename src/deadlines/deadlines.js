@@ -286,41 +286,37 @@ function updateView(schedules) {
     setRenderRangeText();
     document.getElementById('spinnerDiv').innerHTML = '';
     console.log("CALENDAR UPDATED")
+
+    //click expand button if shown
+    document.querySelector('.tui-full-calendar-weekday-exceed-in-week').click();
 }
 
 
 function getSchedules(idStore, dateFrom, dateTo, success, error) {
     //TODO: check for updated provas before in order to avoid too much pressure on fetch contratos
+
+    var knownSchedules = new Map()
+
     fetchContratosWithEventsInPeriod(idStore, dateFrom, dateTo, function(contratos) {
         console.log("CONTRATOS -> SCHEDULES")
         console.log(contratos)
         schedules = []
         for(i=0; i<contratos.length; i++) {
             contrato = contratos[i]
-
-            //add evento to calendar
-            schedule = new ScheduleInfo()
-            schedule.id = chance.guid()
-            schedule.calendarName = "eventos"
-            schedule.title = "[EVENTO] " + contrato.name
-            schedule.body = schedule.title
-            schedule.start = contrato.eventoDate
-            schedule.end = moment(schedule.start).add(60, 'minutes').toDate()
-            schedule.category = 'allday'
-            schedule.isAllDay = true
-            schedules.push(schedule)
+            bestContratoTag = "#sem notas"
 
             for(a=0; a<contrato.items.length; a++) {
                 item = contrato.items[a]
 
                 tag = item.notas
                 if(!tag || tag.trim()=="") {
-                    tag = "SEM NOTAS"
+                    tag = "#sem notas"
                 } else {
                     t = tag.match(/([\#a-zA-Z0-9]+)/)
                     if(t.length==2) {
                         tag = t[1]
                     }
+                    bestContratoTag = tag
                 }
 
                 //add prova to calendar
@@ -344,9 +340,28 @@ function getSchedules(idStore, dateFrom, dateTo, success, error) {
                 schedule.isAllDay = true
                 schedule.start = item.retiradaDate
                 schedule.end = moment(schedule.start).add(60, 'minutes').toDate()
-                schedules.push(schedule)
+                k = schedule.title + "-" + schedule.start
+                if(knownSchedules.get(k)==null) {
+                    knownSchedules.set(k, true)
+                    schedules.push(schedule)
+                } else {
+                    console.log("Ignoring " + k + " because it already exists")
+                }
             }
+
+            //add evento to calendar
+            schedule = new ScheduleInfo()
+            schedule.id = chance.guid()
+            schedule.calendarName = bestContratoTag
+            schedule.title = "[EVENTO] " + contrato.name
+            schedule.body = schedule.title
+            schedule.start = contrato.eventoDate
+            schedule.end = moment(schedule.start).add(60, 'minutes').toDate()
+            schedule.category = 'allday'
+            schedule.isAllDay = true
+            schedules.push(schedule)
         }
+        
         success(schedules)
     }, error)
 }
@@ -361,11 +376,17 @@ function checkDataAndUpdateCalendarView() {
     getSchedules(idStore, dateFrom, dateTo, function (schedules) {
         console.log("Got " + schedules.length + " schedules")
         updateView(schedules)
+        setTimeout(checkDataAndUpdateCalendarView, 300000);
 
     }, function(err) {
         console.error("checkData(): " + err)
         //TODO: SHOW ERROR ON SCREEN
-        updateView([])
+        // alert("ERROR: " + err)
+        // updateView([])
+        setTimeout(function() {
+            console.log("ERROR FOUND. RELOADING WINDOW")
+            location.reload()
+        }, 5000)
     })
 }
 
@@ -380,7 +401,7 @@ getStoreID(function(idSt) {
     cal.today();
     checkDataAndUpdateCalendarView();
     setTimeout(checkDataAndUpdateCalendarView, 30000);
-    
+
 }, function(err) {
     console.error(err)
 })

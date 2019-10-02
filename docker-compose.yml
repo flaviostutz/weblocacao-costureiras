@@ -7,5 +7,7 @@ services:
     image: flaviostutz/weblocacao-extensions
     ports:
       - 8181:80
-    # volumes:
-    #   - /Users/flaviostutz/Documents/development/flaviostutz/weblocacao-extensions/src:/www/_www
+    environment:
+      - PROXY_READ_TIMEOUT=240s
+    volumes:
+      - /Users/flaviostutz/Documents/development/flaviostutz/weblocacao-extensions/src:/www/_www
