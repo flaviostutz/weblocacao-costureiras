@@ -390,6 +390,16 @@ function checkDataAndUpdateCalendarView() {
     })
 }
 
+function expandHideAllDayEvents() {
+    var cb = document.getElementsByClassName('tui-full-calendar-weekday-exceed-in-week')
+    if(cb==null) {
+        cb = document.getElementsByClassName('tui-full-calendar-ic-arrow-solid-top')
+    }
+    if(cb.length>0) {
+        cb[0].dispatchEvent(new Event('mousedown'))
+    }
+    setTimeout(expandHideAllDayEvents, 10000)
+}
 
 //GET ID STORE
 idStore = -1
@@ -398,9 +408,9 @@ getStoreID(function(idSt) {
     console.log("idStore=" + idStore)
 
     //start updating calendar schedules
-    cal.today();
-    checkDataAndUpdateCalendarView();
-    setTimeout(checkDataAndUpdateCalendarView, 30000);
+    cal.today()
+    checkDataAndUpdateCalendarView()
+    expandHideAllDayEvents()
 
 }, function(err) {
     console.error(err)
