@@ -387,13 +387,13 @@ function flipViews() {
 
     if(currentView==0) {
         action = 'toggle-weekly'
-        viewtime = 15 * 60000
+        viewtime = $WEEKLY_VIEW_TIME * 60000
     } else if(currentView==1) {
         action = 'toggle-weeks2'
-        viewtime = 5 * 60000
+        viewtime = $WEEKLY2_VIEW_TIME * 60000
     } else if(currentView==2) {
         action = 'toggle-monthly'
-        viewtime = 10 * 60000
+        viewtime = $MONTHLY_VIEW_TIME * 60000
     // } else if(currentView==3) {
     //     action = 'toggle-daily'
     //     viewtime = 1 * 60000

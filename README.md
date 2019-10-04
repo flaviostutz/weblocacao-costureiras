@@ -12,6 +12,7 @@ services:
 
   weblocacao-extensions:
     image: flaviostutz/weblocacao-extensions
+    restart: always
     ports:
       - 8181:80
 ```
