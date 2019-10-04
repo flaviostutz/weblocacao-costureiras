@@ -1,6 +1,11 @@
+var CACHE_PROVAS_TIMEOUT = 30 * 60000//30 min
+var CACHE_CONTRATO_TIMEOUT = 30 * 60000//30 min
+
 var lastContratoDetailsTime = null
 var lastHashProvasList = ""
 var lastContratoDetails = null
+
+// var cacheContratos = new Map()
 
 function getStoreID(success, error) {
     console.log('getStoreID()')
@@ -73,6 +78,23 @@ function fetchContratosAtivosList(idStore, success, error) {
 
 function fetchContratoDetails(idContrato, success, error) {
     console.log('fetchContratoDetails() idContrato=' + idContrato)
+
+    //try cache
+    // contratoItem = cacheContratos.get(idContrato)
+    contratoItem0 = localStorage.getItem(idContrato+'')
+    if(contratoItem0 != null) {
+        contratoItem = JSON.parse(contratoItem0)
+        if(((new Date()).getTime() - contratoItem.time) < CACHE_CONTRATO_TIMEOUT) {
+            console.log('Reusing contrato from cache. id=' + idContrato)
+            success(contratoItem.contrato)
+            return
+        } else {
+            console.log('Cache contrato is too old. Removing it. idContrato=' + idContrato)
+            // contratoItem.delete(idContrato)
+            localStorage.removeItem(idContrato)
+        }
+    }
+
     //html
     fetch('/order/edit/' + idContrato)
         .then(function(response) {
@@ -159,7 +181,14 @@ function fetchContratoDetails(idContrato, success, error) {
             console.log("CONTRATO DETAILS")
             console.log(contratoDetails)
 
+            //store in cache
+            localStorage.setItem(idContrato+'', JSON.stringify({
+                time: (new Date()).getTime(),
+                contrato: contratoDetails
+            }))
+
             success(contratoDetails)
+
         })
         .catch(err => {
             error(err)
@@ -177,9 +206,10 @@ function fetchAllContratos(cids, contratos, success, error) {
             function(contrato) {
                 contratos.push(contrato)
                 //server is giving 502 here... avoid too much pressure...
-                setTimeout(function() {
-                    fetchAllContratos(cids, contratos, success, error)
-                }, 1000)
+                fetchAllContratos(cids, contratos, success, error)
+                // setTimeout(function() {
+                //     fetchAllContratos(cids, contratos, success, error)
+                // }, 1000)
             }, function(err) {
                 error(err)
             }
@@ -232,7 +262,7 @@ function fetchContratosWithEventsInPeriod(idStore, dateFrom, dateTo, success, er
 
                     validCache = false
                     if(lastContratoDetailsTime!=null) {
-                        validCache = (lastContratoDetailsTime - new Date()) < 300000
+                        validCache = (new Date() - lastContratoDetailsTime) < CACHE_PROVAS_TIMEOUT
                     }
 
                     if(hashProvasList != lastHashProvasList || !validCache) {

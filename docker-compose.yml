@@ -8,6 +8,6 @@ services:
     ports:
       - 8181:80
     environment:
-      - PROXY_READ_TIMEOUT=240s
+      - PROXY_READ_TIMEOUT=300s
     volumes:
       - /Users/flaviostutz/Documents/development/flaviostutz/weblocacao-extensions/src:/www/_www

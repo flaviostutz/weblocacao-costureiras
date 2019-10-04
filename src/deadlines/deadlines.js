@@ -105,48 +105,34 @@ function setDropdownCalendarType() {
 function onClickMenu(e) {
     var target = $(e.target).closest('a[role="menuitem"]')[0];
     var action = getDataAction(target);
+    toggleView(action)
+}
+
+function toggleView(action) {
+    console.log('Showing view ' + action)
+
     var options = cal.getOptions();
     var viewName = '';
+    var dropdownTitle = ''
   
     switch (action) {
       case 'toggle-daily':
         viewName = 'day';
+        dropdownTitle = 'Diário'
         break;
       case 'toggle-weekly':
         viewName = 'week';
+        dropdownTitle = 'Semanal'
         break;
       case 'toggle-monthly':
         options.month.visibleWeeksCount = 0;
         viewName = 'month';
+        dropdownTitle = 'Mensal'
         break;
       case 'toggle-weeks2':
         options.month.visibleWeeksCount = 2;
         viewName = 'month';
-        break;
-      case 'toggle-weeks3':
-        options.month.visibleWeeksCount = 3;
-        viewName = 'month';
-        break;
-      case 'toggle-narrow-weekend':
-        options.month.narrowWeekend = !options.month.narrowWeekend;
-        options.week.narrowWeekend = !options.week.narrowWeekend;
-        viewName = cal.getViewName();
-  
-        target.querySelector('input').checked = options.month.narrowWeekend;
-        break;
-      case 'toggle-start-day-1':
-        options.month.startDayOfWeek = options.month.startDayOfWeek ? 0 : 1;
-        options.week.startDayOfWeek = options.week.startDayOfWeek ? 0 : 1;
-        viewName = cal.getViewName();
-  
-        target.querySelector('input').checked = options.month.startDayOfWeek;
-        break;
-      case 'toggle-workweek':
-        options.month.workweek = !options.month.workweek;
-        options.week.workweek = !options.week.workweek;
-        viewName = cal.getViewName();
-  
-        target.querySelector('input').checked = !options.month.workweek;
+        dropdownTitle = '2 Semanas'
         break;
       default:
         break;
@@ -157,6 +143,9 @@ function onClickMenu(e) {
   
     setDropdownCalendarType();
     checkDataAndUpdateCalendarView();
+
+    var dropdown = document.getElementById('calendarTypeName');
+    dropdown.innerText = dropdownTitle
 }
 
 function onClickNavi(e) {
@@ -286,15 +275,10 @@ function updateView(schedules) {
     setRenderRangeText();
     document.getElementById('spinnerDiv').innerHTML = '';
     console.log("CALENDAR UPDATED")
-
-    //click expand button if shown
-    document.querySelector('.tui-full-calendar-weekday-exceed-in-week').click();
 }
 
 
 function getSchedules(idStore, dateFrom, dateTo, success, error) {
-    //TODO: check for updated provas before in order to avoid too much pressure on fetch contratos
-
     var knownSchedules = new Map()
 
     fetchContratosWithEventsInPeriod(idStore, dateFrom, dateTo, function(contratos) {
@@ -367,6 +351,7 @@ function getSchedules(idStore, dateFrom, dateTo, success, error) {
 }
 
 //GET SCHEDULES FROM WEBLOCACAO AND UPDATE VIEW
+var currentTimeoutHandle = null
 function checkDataAndUpdateCalendarView() {
     setRenderRangeText();
     dateFrom = cal.getDateRangeStart().getTime()
@@ -376,7 +361,10 @@ function checkDataAndUpdateCalendarView() {
     getSchedules(idStore, dateFrom, dateTo, function (schedules) {
         console.log("Got " + schedules.length + " schedules")
         updateView(schedules)
-        setTimeout(checkDataAndUpdateCalendarView, 300000);
+        if(currentTimeoutHandle!=null) {
+            clearTimeout(currentTimeoutHandle)
+        }
+        currentTimeoutHandle = setTimeout(checkDataAndUpdateCalendarView, 3600000);
 
     }, function(err) {
         console.error("checkData(): " + err)
@@ -390,15 +378,36 @@ function checkDataAndUpdateCalendarView() {
     })
 }
 
-function expandHideAllDayEvents() {
-    var cb = document.getElementsByClassName('tui-full-calendar-weekday-exceed-in-week')
-    if(cb==null) {
-        cb = document.getElementsByClassName('tui-full-calendar-ic-arrow-solid-top')
+var currentView = 0
+currentFlipTimeoutHandle = null
+
+function flipViews() {
+
+    var viewtime = 5 * 60000
+
+    if(currentView==0) {
+        action = 'toggle-weekly'
+        viewtime = 15 * 60000
+    } else if(currentView==1) {
+        action = 'toggle-weeks2'
+        viewtime = 5 * 60000
+    } else if(currentView==2) {
+        action = 'toggle-monthly'
+        viewtime = 10 * 60000
+    // } else if(currentView==3) {
+    //     action = 'toggle-daily'
+    //     viewtime = 1 * 60000
+        currentView = -1
     }
-    if(cb.length>0) {
-        cb[0].dispatchEvent(new Event('mousedown'))
+    console.log('CURRENT VIEW ' + currentView)
+    currentView++
+
+    toggleView(action)
+
+    if(currentFlipTimeoutHandle!=null) {
+        clearTimeout(currentFlipTimeoutHandle)
     }
-    setTimeout(expandHideAllDayEvents, 10000)
+    currentFlipTimeoutHandle = setTimeout(flipViews, viewtime);
 }
 
 //GET ID STORE
@@ -409,8 +418,13 @@ getStoreID(function(idSt) {
 
     //start updating calendar schedules
     cal.today()
-    checkDataAndUpdateCalendarView()
-    expandHideAllDayEvents()
+    flipViews()
+
+    //full reload once a day
+    setTimeout(function() {
+        console.log("FULL RELOADING ONCE A DAY")
+        location.reload()
+    }, 24*60*60*1000)
 
 }, function(err) {
     console.error(err)
