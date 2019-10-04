@@ -1,4 +1,4 @@
-FROM flaviostutz/nginx-cache-proxy:1.6.0
+FROM flaviostutz/nginx-cache-proxy:1.7.0
 
 RUN apt-get update && apt-get install gettext -y
 

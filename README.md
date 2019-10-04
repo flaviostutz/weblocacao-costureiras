@@ -41,3 +41,15 @@ services:
   * https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
   * The installation process will take a while
 
+## Building for other architectures
+
+* Install Docker Edge version
+  * https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
+```shell
+docker buildx create --name mybuilder
+docker buildx create --use
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t flaviostutz/weblocacao-extensions:1.0.0 --push .
+```
+
+* See more at https://engineering.docker.com/2019/04/multi-arch-images/

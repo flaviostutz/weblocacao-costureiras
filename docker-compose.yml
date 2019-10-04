@@ -9,8 +9,8 @@ services:
       - 8181:80
     environment:
       - PROXY_READ_TIMEOUT=300s
-      - WEEKLY_VIEW_TIME=15
-      - WEEKLY2_VIEW_TIME=5
-      - MONTHLY_VIEW_TIME=5
+      - WEEKLY_VIEW_TIME=0.4
+      - WEEKLY2_VIEW_TIME=0.4
+      - MONTHLY_VIEW_TIME=0.4
     # volumes:
     #   - /Users/flaviostutz/Documents/development/flaviostutz/weblocacao-extensions/src:/www/_www
