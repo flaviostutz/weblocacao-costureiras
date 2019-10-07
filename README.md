@@ -49,7 +49,7 @@ services:
 ```shell
 docker buildx create --name mybuilder
 docker buildx create --use
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t flaviostutz/weblocacao-extensions:1.0.0 --push .
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t flaviostutz/weblocacao-extensions:1.0.1 --push .
 ```
 
 * See more at https://engineering.docker.com/2019/04/multi-arch-images/
