@@ -307,7 +307,7 @@ function getSchedules(idStore, dateFrom, dateTo, success, error) {
                 schedule = new ScheduleInfo()
                 schedule.id = chance.guid()
                 schedule.calendarName = tag
-                schedule.title = "[PROVA] " + contrato.name + " " + tag
+                schedule.title = "[PRO] " + contrato.name + " " + tag
                 schedule.body = schedule.title
                 schedule.start = item.provaDate
                 schedule.end = moment(schedule.start).add(60, 'minutes').toDate()
@@ -318,7 +318,7 @@ function getSchedules(idStore, dateFrom, dateTo, success, error) {
                 schedule = new ScheduleInfo()
                 schedule.id = chance.guid()
                 schedule.calendarName = tag
-                schedule.title = "[RETIRADA] " + contrato.name + " " + tag
+                schedule.title = "[RET] " + contrato.name + " " + tag
                 schedule.body = schedule.title
                 schedule.category = 'allday'
                 schedule.isAllDay = true
